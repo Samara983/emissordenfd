@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nota Fiscal de Serviço (NFS-e)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px;
+        }
+        .result {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Emissão de Nota Fiscal de Serviço (NFS-e)</h1>
+    <form id="nfs-form">
+        <label for="valorVenda">Valor da Venda:</label>
+        <input type="number" id="valorVenda" step="0.01" required>
+
+        <label for="itens">Itens Vendidos:</label>
+        <input type="text" id="itens" placeholder="Ex.: Serviço de Consultoria">
+
+        <label for="irpf">Porcentagem do IRPF (%):</label>
+        <input type="number" id="irpf" step="0.01" required>
+
+        <label for="pis">Porcentagem do PIS (%):</label>
+        <input type="number" id="pis" step="0.01" required>
+
+        <label for="cofins">Porcentagem do COFINS (%):</label>
+        <input type="number" id="cofins" step="0.01" required>
+
+        <label for="inss">Porcentagem do INSS (%):</label>
+        <input type="number" id="inss" step="0.01" required>
+
+        <label for="issqn">Porcentagem do ISSQN (%):</label>
+        <input type="number" id="issqn" step="0.01" required>
+
+        <button type="button" onclick="calcularNFS()">Gerar Nota Fiscal</button>
+    </form>
+
+    <div id="notaFiscal" class="result" style="display: none;"></div>
+
+    <script>
+        function calcularNFS() {
+            const valorVenda = parseFloat(document.getElementById('valorVenda').value);
+            const itens = document.getElementById('itens').value;
+            const irpf = parseFloat(document.getElementById('irpf').value) / 100;
+            const pis = parseFloat(document.getElementById('pis').value) / 100;
+            const cofins = parseFloat(document.getElementById('cofins').value) / 100;
+            const inss = parseFloat(document.getElementById('inss').value) / 100;
+            const issqn = parseFloat(document.getElementById('issqn').value) / 100;
+
+            // Calculando os impostos
+            const valorIRPF = valorVenda * irpf;
+            const valorPIS = valorVenda * pis;
+            const valorCOFINS = valorVenda * cofins;
+            const valorINSS = valorVenda * inss;
+            const valorISSQN = valorVenda * issqn;
+            const totalImpostos = valorIRPF + valorPIS + valorCOFINS + valorINSS + valorISSQN;
+
+            // Exibindo a Nota Fiscal
+            const notaFiscal = document.getElementById('notaFiscal');
+            notaFiscal.style.display = 'block';
+            notaFiscal.innerHTML = `
+                <h2>Nota Fiscal de Serviço</h2>
+                <p><strong>Itens Vendidos:</strong> ${itens}</p>
+                <p><strong>Valor da Venda:</strong> R$ ${valorVenda.toFixed(2)}</p>
+                <h3>Impostos Calculados:</h3>
+                <p>IRPF: R$ ${valorIRPF.toFixed(2)}</p>
+                <p>PIS: R$ ${valorPIS.toFixed(2)}</p>
+                <p>COFINS: R$ ${valorCOFINS.toFixed(2)}</p>
+                <p>INSS: R$ ${valorINSS.toFixed(2)}</p>
+                <p>ISSQN: R$ ${valorISSQN.toFixed(2)}</p>
+                <p><strong>Total de Impostos:</strong> R$ ${totalImpostos.toFixed(2)}</p>
+                <p><strong>Valor Líquido:</strong> R$ ${(valorVenda - totalImpostos).toFixed(2)}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
